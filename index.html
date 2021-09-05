@@ -86,6 +86,16 @@
         document.getElementById("placeholder").outerHTML =
           document.getElementById("main").innerHTML;
         var painter = new Paint(canvas, wgl);
+        /*var points = [
+          //[100, 200],
+          //[100, 300],
+          //[100, 500],
+          [500, 500],
+        ];
+        for (var p in points) {
+          painter.automaticPaint(p[0], p[1]);
+          console.log(p);
+        }*/
       } else {
         //required features unsupported
         document.getElementById("placeholder").outerHTML =

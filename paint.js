@@ -95,6 +95,7 @@ var Paint = (function () {
 
   var HISTORY_SIZE = 4; //number of snapshots we store - this should be number of reversible actions + 1
 
+  //==================================================================================================================
   function pascalRow(n) {
     var line = [1];
     for (var k = 0; k < n; ++k) {
@@ -197,7 +198,7 @@ var Paint = (function () {
   function mix(a, b, t) {
     return (1.0 - t) * a + t * b;
   }
-
+  //==================================================================================================================
   //the texture is always updated to be (paintingWidth x paintingHeight) x resolutionScale
   function Snapshot(texture, paintingWidth, paintingHeight, resolutionScale) {
     this.texture = texture;
@@ -214,6 +215,7 @@ var Paint = (function () {
     return Math.ceil(this.paintingHeight * this.resolutionScale);
   };
 
+  //==================================================================================================================
   function Paint(canvas, wgl) {
     this.canvas = canvas;
     this.wgl = wgl;
@@ -1638,6 +1640,28 @@ var Paint = (function () {
         this.saveSnapshot();
       }
     }
+
+    function r(bottom, top) {
+      return ((Math.random() * (top - bottom)) >> 0) + bottom;
+    }
+    var board = this.paintingRectangle;
+    console.log(mouseX, mouseY, this.brushX, this.brushY, board);
+    for (let i = 0; i < 1000; i++) {
+      setTimeout(function () {
+        var x = r(board.left * 2, board.width - board.left * 2);
+        var y = r(board.bottom * 2, board.height - board.bottom * 2);
+        if (
+          x < board.left * 2 ||
+          x > board.width - board.left * 2 ||
+          y < board.bottom ||
+          y > board.height - board.bottom * 2
+        ) {
+          console.log(x, y, board);
+          console.error("what");
+        }
+        painter.automaticPaint(x, y);
+      }, i * 2000);
+    }
   };
 
   Paint.prototype.onMouseUp = function (event) {
@@ -1770,6 +1794,24 @@ var Paint = (function () {
     if (event.touches.length > 0) return; //don't fire if there are still touches remaining
 
     this.onMouseUp({});
+  };
+
+  Paint.prototype.automaticPaint = function (x, y) {
+    this.interactionState = InteractionMode.PAINTING;
+    this.brushX = x;
+    this.brushY = this.canvas.height - y;
+    if (!this.brushInitialized) {
+      this.brush.initialize(
+        this.brushX,
+        this.brushY,
+        BRUSH_HEIGHT * this.brushScale,
+        this.brushScale
+      );
+      this.brushInitialized = true;
+    }
+    this.brushColorHSVA = [Math.random(), 1, 1, 0.8];
+    //this.colorPicker.move(this.brushX, this.brushY);
+    //this.saveSnapshot();
   };
 
   return Paint;
