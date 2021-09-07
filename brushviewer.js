@@ -1,7 +1,5 @@
-var BrushViewer = (function () {
-  "use strict";
-
-  function makePerspectiveMatrix(out, fovy, aspect, near, far) {
+class BrushViewer {
+  _makePerspectiveMatrix(out, fovy, aspect, near, far) {
     var f = 1.0 / Math.tan(fovy / 2),
       nf = 1 / (near - far);
 
@@ -24,7 +22,7 @@ var BrushViewer = (function () {
     return out;
   }
 
-  function makeIdentityMatrix(matrix) {
+  _makeIdentityMatrix(matrix) {
     matrix[0] = 1.0;
     matrix[1] = 0.0;
     matrix[2] = 0.0;
@@ -44,7 +42,7 @@ var BrushViewer = (function () {
     return matrix;
   }
 
-  function premultiplyMatrix(out, matrixA, matrixB) {
+  _premultiplyMatrix(out, matrixA, matrixB) {
     //out = matrixB * matrixA
     var b0 = matrixB[0],
       b4 = matrixB[4],
@@ -98,7 +96,7 @@ var BrushViewer = (function () {
     return out;
   }
 
-  function makeXRotationMatrix(matrix, angle) {
+  _makeXRotationMatrix(matrix, angle) {
     matrix[0] = 1.0;
     matrix[1] = 0.0;
     matrix[2] = 0.0;
@@ -118,7 +116,7 @@ var BrushViewer = (function () {
     return matrix;
   }
 
-  function makeYRotationMatrix(matrix, angle) {
+  _makeYRotationMatrix(matrix, angle) {
     matrix[0] = Math.cos(angle);
     matrix[1] = 0.0;
     matrix[2] = -Math.sin(angle);
@@ -138,7 +136,7 @@ var BrushViewer = (function () {
     return matrix;
   }
 
-  function BrushViewer(wgl, brushProgram, left, bottom, width, height) {
+  constructor(wgl, brushProgram, left, bottom, width, height) {
     this.wgl = wgl;
     this.brushProgram = brushProgram;
 
@@ -147,7 +145,7 @@ var BrushViewer = (function () {
     this.width = width;
     this.height = height;
 
-    this.closeupProjectionMatrix = makePerspectiveMatrix(
+    this.closeupProjectionMatrix = _makePerspectiveMatrix(
       new Float32Array(16),
       Math.PI / 2.0,
       this.width / this.height,
@@ -156,35 +154,35 @@ var BrushViewer = (function () {
     );
   }
 
-  BrushViewer.prototype.draw = function (brushX, brushY, brush) {
+  draw(brushX, brushY, brush) {
     var wgl = this.wgl;
 
     var xRotationMatrix = new Float32Array(16),
       yRotationMatrix = new Float32Array(16),
-      distanceTranslationMatrix = makeIdentityMatrix(new Float32Array(16)),
-      orbitTranslationMatrix = makeIdentityMatrix(new Float32Array(16));
+      distanceTranslationMatrix = _makeIdentityMatrix(new Float32Array(16)),
+      orbitTranslationMatrix = _makeIdentityMatrix(new Float32Array(16));
 
     var viewMatrix = new Float32Array(16);
-    makeIdentityMatrix(viewMatrix);
+    _makeIdentityMatrix(viewMatrix);
 
     var elevation = -Math.PI / 2;
     var azimuth = 0.0;
     var distance = 120.0;
     var orbitPoint = [brushX, brushY, 60.0];
 
-    makeXRotationMatrix(xRotationMatrix, elevation);
-    makeYRotationMatrix(yRotationMatrix, azimuth);
+    _makeXRotationMatrix(xRotationMatrix, elevation);
+    _makeYRotationMatrix(yRotationMatrix, azimuth);
     distanceTranslationMatrix[14] = -distance;
     orbitTranslationMatrix[12] = -orbitPoint[0];
     orbitTranslationMatrix[13] = -orbitPoint[1];
     orbitTranslationMatrix[14] = -orbitPoint[2];
 
-    premultiplyMatrix(viewMatrix, viewMatrix, orbitTranslationMatrix);
-    premultiplyMatrix(viewMatrix, viewMatrix, yRotationMatrix);
-    premultiplyMatrix(viewMatrix, viewMatrix, xRotationMatrix);
-    premultiplyMatrix(viewMatrix, viewMatrix, distanceTranslationMatrix);
+    _premultiplyMatrix(viewMatrix, viewMatrix, orbitTranslationMatrix);
+    _premultiplyMatrix(viewMatrix, viewMatrix, yRotationMatrix);
+    _premultiplyMatrix(viewMatrix, viewMatrix, xRotationMatrix);
+    _premultiplyMatrix(viewMatrix, viewMatrix, distanceTranslationMatrix);
 
-    var projectionViewMatrix = premultiplyMatrix(
+    var projectionViewMatrix = _premultiplyMatrix(
       new Float32Array(16),
       viewMatrix,
       this.closeupProjectionMatrix
@@ -226,7 +224,5 @@ var BrushViewer = (function () {
       wgl.UNSIGNED_SHORT,
       0
     );
-  };
-
-  return BrushViewer;
-})();
+  }
+}

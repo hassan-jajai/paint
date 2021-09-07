@@ -1,21 +1,16 @@
-var Brush = (function () {
-  "use strict";
+var N_PREVIOUS_SPEEDS = 15; //how many previous speeds we store
+var SPLATS_PER_SEGMENT = 8;
+var VERTICES_PER_BRISTLE = 10;
+var BRISTLE_LENGTH = 4.5; //relative to a scale of 1
+var BRISTLE_JITTER = 0.5;
+var ITERATIONS = 20;
+var GRAVITY = 30.0;
+var BRUSH_DAMPING = 0.75;
+var STIFFNESS_VARIATION = 0.3;
 
-  var N_PREVIOUS_SPEEDS = 15; //how many previous speeds we store
-
-  var SPLATS_PER_SEGMENT = 8;
-
-  var VERTICES_PER_BRISTLE = 10;
-  var BRISTLE_LENGTH = 4.5; //relative to a scale of 1
-  var BRISTLE_JITTER = 0.5;
-
-  var ITERATIONS = 20;
-  var GRAVITY = 30.0;
-  var BRUSH_DAMPING = 0.75;
-  var STIFFNESS_VARIATION = 0.3;
-
+class Brush {
   //the radius of a brush is equal to the scale
-  function Brush(wgl, shaderSources, maxBristleCount) {
+  constructor(wgl, shaderSources, maxBristleCount) {
     this.wgl = wgl;
 
     this.maxBristleCount = maxBristleCount;
@@ -261,7 +256,7 @@ var Brush = (function () {
   }
 
   //sets all the bristle vertices
-  Brush.prototype.initialize = function (x, y, z, scale) {
+  initialize(x, y, z, scale) {
     this.positionX = x;
     this.positionY = y;
     this.positionZ = z;
@@ -322,9 +317,9 @@ var Brush = (function () {
     );
 
     wgl.drawArrays(setBristlesDrawState, wgl.TRIANGLE_STRIP, 0, 4);
-  };
+  }
 
-  Brush.prototype.setBristleCount = function (newBristleCount) {
+  setBristleCount(newBristleCount) {
     var wgl = this.wgl;
 
     //we set all the bristle vertices that weren't previously being simulated
@@ -384,16 +379,16 @@ var Brush = (function () {
     }
 
     this.bristleCount = newBristleCount;
-  };
+  }
 
   //max of last N_PREVIOUS_SPEEDS speeds
-  Brush.prototype.getFilteredSpeed = function () {
+  getFilteredSpeed() {
     return this.speeds.reduce(function (a, b) {
       return Math.max(a, b);
     });
-  };
+  }
 
-  Brush.prototype.update = function (x, y, z, scale) {
+  update(x, y, z, scale) {
     var dx = x - this.positionX,
       dy = y - this.positionY,
       dz = z - this.positionZ;
@@ -723,7 +718,5 @@ var Brush = (function () {
 
     Utilities.swap(this, "previousPositionsTexture", "positionsTexture");
     Utilities.swap(this, "positionsTexture", "projectedPositionsTexture");
-  };
-
-  return Brush;
-})();
+  }
+}

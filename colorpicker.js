@@ -1,28 +1,25 @@
-var ColorPicker = (function () {
-  "use strict";
+var WIDTH = 200;
+var HEIGHT = 200;
 
-  var WIDTH = 200;
-  var HEIGHT = 200;
+//coordinates are all relative to [left, bottom]
+var ALPHA_SLIDER_X = 140;
+var ALPHA_SLIDER_Y = 70;
+var ALPHA_SLIDER_WIDTH = 20;
+var ALPHA_SLIDER_HEIGHT = 120;
 
-  //coordinates are all relative to [left, bottom]
+//center of the hue circle
+var CIRCLE_X = 65;
+var CIRCLE_Y = 130;
 
-  var ALPHA_SLIDER_X = 140;
-  var ALPHA_SLIDER_Y = 70;
-  var ALPHA_SLIDER_WIDTH = 20;
-  var ALPHA_SLIDER_HEIGHT = 120;
+var INNER_RADIUS = 50; //75;
+var OUTER_RADIUS = 65; //90;
 
-  //center of the hue circle
-  var CIRCLE_X = 65;
-  var CIRCLE_Y = 130;
+//dimensions of the inner saturation brightness square
+var SQUARE_WIDTH = INNER_RADIUS * Math.sqrt(2);
 
-  var INNER_RADIUS = 50; //75;
-  var OUTER_RADIUS = 65; //90;
-
-  //dimensions of the inner saturation brightness square
-  var SQUARE_WIDTH = INNER_RADIUS * Math.sqrt(2);
-
+class ColorPicker {
   //edits a HSVA array
-  function ColorPicker(
+  constructor(
     painter,
     parameterName,
     wgl,
@@ -67,7 +64,7 @@ var ColorPicker = (function () {
     );
   }
 
-  ColorPicker.prototype.draw = function (rgbModel) {
+  draw(rgbModel) {
     var wgl = this.wgl;
 
     var hsva = this.painter[this.parameterName];
@@ -105,17 +102,17 @@ var ColorPicker = (function () {
       .blendFunc(wgl.ONE, wgl.ONE_MINUS_SRC_ALPHA); //premultiplied alpha
 
     wgl.drawArrays(pickerDrawState, wgl.TRIANGLE_STRIP, 0, 4);
-  };
+  }
 
-  ColorPicker.prototype.overControl = function (x, y) {
+  overControl(x, y) {
     return (
       this.overHue(x, y) ||
       this.overSaturationLightness(x, y) ||
       this.overAlpha(x, y)
     );
-  };
+  }
 
-  ColorPicker.prototype.overHue = function (x, y) {
+  overHue(x, y) {
     //x and y are relative to the canvas
     x -= this.left;
     y -= this.bottom;
@@ -126,9 +123,9 @@ var ColorPicker = (function () {
     var distance = Math.sqrt(xDist * xDist + yDist * yDist);
 
     return distance < OUTER_RADIUS && distance > INNER_RADIUS;
-  };
+  }
 
-  ColorPicker.prototype.overSaturationLightness = function (x, y) {
+  overSaturationLightness(x, y) {
     //x and y are relative to the canvas
     x -= this.left;
     y -= this.bottom;
@@ -139,9 +136,9 @@ var ColorPicker = (function () {
     return (
       Math.abs(xDist) <= SQUARE_WIDTH / 2 && Math.abs(yDist) <= SQUARE_WIDTH / 2
     );
-  };
+  }
 
-  ColorPicker.prototype.overAlpha = function (x, y) {
+  overAlpha(x, y) {
     //x and y are relative to the canvas
     x -= this.left;
     y -= this.bottom;
@@ -152,9 +149,9 @@ var ColorPicker = (function () {
       y >= ALPHA_SLIDER_Y &&
       y <= ALPHA_SLIDER_Y + ALPHA_SLIDER_HEIGHT
     );
-  };
+  }
 
-  ColorPicker.prototype.onMouseDown = function (x, y) {
+  onMouseDown(x, y) {
     //x and y are relative to the canvas
     if (this.overHue(x, y)) {
       this.huePressed = true;
@@ -165,21 +162,21 @@ var ColorPicker = (function () {
     }
 
     this.onMouseMove(x, y);
-  };
+  }
 
-  ColorPicker.prototype.isInUse = function () {
+  isInUse() {
     return (
       this.huePressed || this.saturationLightnessPressed || this.alphaPressed
     );
-  };
+  }
 
-  ColorPicker.prototype.onMouseUp = function (x, y) {
+  onMouseUp(x, y) {
     this.huePressed = false;
     this.saturationLightnessPressed = false;
     this.alphaPressed = false;
-  };
+  }
 
-  ColorPicker.prototype.onMouseMove = function (mouseX, mouseY) {
+  onMouseMove(mouseX, mouseY) {
     //make relative to the picker
     mouseX -= this.left;
     mouseY -= this.bottom;
@@ -214,7 +211,5 @@ var ColorPicker = (function () {
         );
       }
     }
-  };
-
-  return ColorPicker;
-})();
+  }
+}
