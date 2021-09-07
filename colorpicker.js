@@ -1,22 +1,22 @@
 var ColorPicker = (function () {
   "use strict";
 
-  var WIDTH = 300;
+  var WIDTH = 200;
   var HEIGHT = 200;
 
   //coordinates are all relative to [left, bottom]
 
-  var ALPHA_SLIDER_X = 220;
-  var ALPHA_SLIDER_Y = 10;
+  var ALPHA_SLIDER_X = 140;
+  var ALPHA_SLIDER_Y = 70;
   var ALPHA_SLIDER_WIDTH = 20;
-  var ALPHA_SLIDER_HEIGHT = 180;
+  var ALPHA_SLIDER_HEIGHT = 120;
 
   //center of the hue circle
-  var CIRCLE_X = 100;
-  var CIRCLE_Y = 100;
+  var CIRCLE_X = 65;
+  var CIRCLE_Y = 130;
 
-  var INNER_RADIUS = 75;
-  var OUTER_RADIUS = 90;
+  var INNER_RADIUS = 50; //75;
+  var OUTER_RADIUS = 65; //90;
 
   //dimensions of the inner saturation brightness square
   var SQUARE_WIDTH = INNER_RADIUS * Math.sqrt(2);

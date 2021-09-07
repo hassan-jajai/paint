@@ -29,7 +29,7 @@ var Simulator = (function () {
     this.resolutionWidth = resolutionWidth;
     this.resolutionHeight = resolutionHeight;
 
-    this.fluidity = 0.8;
+    this.fluidity = 0.5;
 
     this.frameNumber = 0;
 

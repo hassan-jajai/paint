@@ -6,7 +6,6 @@ body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-
   user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -15,36 +14,27 @@ body {
 
 #ui {
   pointer-events: none;
-
   position: absolute;
-
   top: 0;
   left: 0;
-
-  width: 300px;
+  width: 200px;
 }
 
 .button {
   display: inline-block;
-
   margin-top: 24px;
-
-  width: 115px;
+  width: 70px;
   height: 30px;
   line-height: 30px;
-
   text-align: center;
   font-size: 12px;
   color: white;
-
   cursor: pointer;
-
   pointer-events: auto;
 }
 
 #clear-button {
   margin-left: 30px;
-
   background: rgb(220, 0, 40);
 }
 
@@ -58,7 +48,6 @@ body {
 
 #save-button {
   background: rgb(0, 170, 50);
-
   margin-left: 10px;
 }
 
@@ -73,7 +62,6 @@ body {
 .control-label {
   margin-left: 30px;
   margin-top: 9px;
-
   color: white;
   font-size: 12px;
 }
@@ -81,44 +69,33 @@ body {
 .slider {
   margin-top: 3px;
   margin-left: 30px;
-
   position: relative;
-
-  width: 240px;
+  width: 150px;
   height: 15px;
-
   user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
-
   cursor: ew-resize;
-
   pointer-events: auto;
 }
 
 .buttons {
   margin-top: 7px;
   margin-left: 30px;
-
-  height: 26px;
+  height: 20px;
 }
 
 .buttons div {
   box-sizing: border-box;
-
   float: left;
-  width: 80px;
-
+  width: 50px;
   padding: 3px 0px;
-
   border-top: 1px solid white;
   border-bottom: 1px solid white;
   border-left: 1px solid white;
-
-  font-size: 11px;
+  font-size: 12px;
   text-align: center;
-
   pointer-events: auto;
 }
 
@@ -131,51 +108,43 @@ body {
 }
 
 #qualities div {
-  width: 80px;
+  width: 50px;
 }
 
 #models div {
-  width: 120px;
+  width: 75px;
 }
 
 .button-selected {
   background: white;
   color: black;
-
   cursor: default;
 }
 
 .button-unselected {
   color: white;
-
   cursor: pointer;
 }
 
 #instructions {
   position: absolute;
-
   bottom: 24px;
   left: 30px;
-
   line-height: 16px;
   font-size: 12px;
   color: #111111;
-
   pointer-events: none;
 }
 
 #instructions span {
   font-weight: bold;
-
   color: #111111;
 }
 
 #footer {
   position: absolute;
-
   bottom: 24px;
   right: 30px;
-
   color: #111111;
   font-size: 12px;
   line-height: 16px;
@@ -191,10 +160,8 @@ body {
   height: 30px;
   top: 50%;
   margin-top: -15px;
-
   text-align: center;
-  font-size: 16px;
-
+  font-size: 12px;
   color: #333333;
 }
 
@@ -214,9 +181,12 @@ body {
   margin-left: 10px;
 }
 
-.do-button-active {
-  margin-top: 200px;
+#start-button {
+  margin-left: 10px;
+}
 
+.do-button-active {
+  margin-top: 150px;
   background: rgb(30, 100, 130);
 }
 
@@ -229,9 +199,7 @@ body {
 }
 
 .do-button-inactive {
-  margin-top: 200px;
-
+  margin-top: 150px;
   cursor: default;
-
   background: #666666;
 }

@@ -43,7 +43,7 @@ var Paint = (function () {
   var INITIAL_QUALITY = 1;
 
   var INITIAL_PADDING = 100;
-  var MIN_PAINTING_WIDTH = 300;
+  var MIN_PAINTING_WIDTH = 650; // 300;
   var MAX_PAINTING_WIDTH = 4096; //this is further constrained by the maximum texture size
 
   //brush parameters
@@ -53,6 +53,8 @@ var Paint = (function () {
   var MAX_BRUSH_SCALE = 75;
   var BRUSH_HEIGHT = 2.0; //how high the brush is over the canvas - this is scaled with the brushScale
   var Z_THRESHOLD = 0.13333; //this is scaled with the brushScale
+  var MAX_FLUIDITY = 0.9;
+  var MIN_FLUIDITY = 0.5;
 
   //splatting parameters
   var SPLAT_VELOCITY_SCALE = 0.14;
@@ -94,6 +96,8 @@ var Paint = (function () {
   var LIGHT_DIRECTION = [0, 1, 1];
 
   var HISTORY_SIZE = 4; //number of snapshots we store - this should be number of reversible actions + 1
+
+  var autoDrawFlag = false;
 
   //==================================================================================================================
   function pascalRow(n) {
@@ -198,6 +202,11 @@ var Paint = (function () {
   function mix(a, b, t) {
     return (1.0 - t) * a + t * b;
   }
+
+  function rnd(bottom, top) {
+    return ((Math.random() * (top - bottom)) >> 0) + bottom;
+  }
+
   //==================================================================================================================
   //the texture is always updated to be (paintingWidth x paintingHeight) x resolutionScale
   function Snapshot(texture, paintingWidth, paintingHeight, resolutionScale) {
@@ -411,7 +420,7 @@ var Paint = (function () {
       this.brushX = 0;
       this.brushY = 0;
 
-      this.brushScale = 50;
+      this.brushScale = 5; // brush size
 
       this.brushColorHSVA = [Math.random(), 1, 1, 0.8];
 
@@ -424,8 +433,8 @@ var Paint = (function () {
       this.fluiditySlider = new Slider(
         document.getElementById("fluidity-slider"),
         this.simulator.fluidity,
-        0.6,
-        0.9,
+        MIN_FLUIDITY,
+        MAX_FLUIDITY,
         function (fluidity) {
           this.simulator.fluidity = fluidity;
         }.bind(this)
@@ -463,6 +472,7 @@ var Paint = (function () {
         }),
         INITIAL_QUALITY,
         function (index) {
+          edo;
           this.saveSnapshot();
 
           this.resolutionScale = QUALITIES[index].resolutionScale;
@@ -518,7 +528,6 @@ var Paint = (function () {
         "touchstart",
         function (event) {
           event.preventDefault();
-
           this.clear();
         }.bind(this)
       );
@@ -540,6 +549,19 @@ var Paint = (function () {
         function (event) {
           event.preventDefault();
           this.redo();
+        }.bind(this)
+      );
+
+      this.startButton = document.getElementById("start-button");
+      this.startButton.addEventListener(
+        "click",
+        this.startAutoPainting.bind(this)
+      );
+      this.startButton.addEventListener(
+        "touchstart",
+        function (event) {
+          event.preventDefault();
+          this.startAutoPainting();
         }.bind(this)
       );
 
@@ -1281,7 +1303,6 @@ var Paint = (function () {
 
   Paint.prototype.save = function () {
     //we first render the painting to a WebGL texture
-
     var wgl = this.wgl;
 
     var saveWidth = this.paintingRectangle.width;
@@ -1640,28 +1661,6 @@ var Paint = (function () {
         this.saveSnapshot();
       }
     }
-
-    function r(bottom, top) {
-      return ((Math.random() * (top - bottom)) >> 0) + bottom;
-    }
-    var board = this.paintingRectangle;
-    console.log(mouseX, mouseY, this.brushX, this.brushY, board);
-    for (let i = 0; i < 1000; i++) {
-      setTimeout(function () {
-        var x = r(board.left * 2, board.width - board.left * 2);
-        var y = r(board.bottom * 2, board.height - board.bottom * 2);
-        if (
-          x < board.left * 2 ||
-          x > board.width - board.left * 2 ||
-          y < board.bottom ||
-          y > board.height - board.bottom * 2
-        ) {
-          console.log(x, y, board);
-          console.error("what");
-        }
-        painter.automaticPaint(x, y);
-      }, i * 2000);
-    }
   };
 
   Paint.prototype.onMouseUp = function (event) {
@@ -1796,7 +1795,7 @@ var Paint = (function () {
     this.onMouseUp({});
   };
 
-  Paint.prototype.automaticPaint = function (x, y) {
+  Paint.prototype.drawLine = function (x, y) {
     this.interactionState = InteractionMode.PAINTING;
     this.brushX = x;
     this.brushY = this.canvas.height - y;
@@ -1809,9 +1808,35 @@ var Paint = (function () {
       );
       this.brushInitialized = true;
     }
-    this.brushColorHSVA = [Math.random(), 1, 1, 0.8];
-    //this.colorPicker.move(this.brushX, this.brushY);
-    //this.saveSnapshot();
+    this.brushColorHSVA = [
+      Math.random(),
+      rnd(60, 100) / 100,
+      rnd(60, 100) / 100,
+      rnd(80, 100) / 100,
+    ];
+    //this.brushColorHSVA = [Math.random(), 1, 1, 0.8];
+  };
+
+  Paint.prototype.startAutoPainting = function () {
+    let board = this.paintingRectangle;
+    console.log(this.brushX, this.brushY, board);
+    autoDrawFlag != autoDrawFlag;
+    for (let i = 0; i < 100; i++) {
+      setTimeout(function () {
+        let x = rnd(board.left * 2, board.width - board.left);
+        let y = rnd(board.bottom * 2, board.height - board.bottom);
+        if (
+          x < board.left * 2 ||
+          x > board.width - board.left * 2 ||
+          y < board.bottom ||
+          y > board.height - board.bottom * 2
+        ) {
+          console.error("what");
+          console.log(x, y, board);
+        }
+        painter.drawLine(x, y);
+      }, i * 100);
+    }
   };
 
   return Paint;

@@ -38,14 +38,15 @@
 
           <div class="control-label">Paint Color</div>
 
-          <div id="undo-button" class="button">Undo</div><div id="redo-button" class="button">Redo</div>
+          <div id="undo-button" class="button">Undo</div>
+          <div id="redo-button" class="button">Redo</div>
+          <div id="start-button" class="button">Start</div>
       </div>
 
-
       <div id="instructions">
-          <span>Click and hold</span> to paint <br/>
-          <span>Scroll</span> to change brush size<br/>
-          <span>Space + drag</span> to pan<br/>
+          <span>Click and hold</span> to paint &emsp;
+          <span>Scroll</span> to change brush size &emsp;
+          <span>Space + drag</span> to pan &emsp;
           <span>Drag edges</span> to resize canvas
       </div>
 
@@ -73,7 +74,6 @@
     <script src="buttons.js"></script>
     <!--<script src="brushviewer.js"></script>-->
     <script src="paint.js"></script>
-
     <script>
       "use strict";
 
@@ -93,7 +93,7 @@
           [500, 500],
         ];
         for (var p in points) {
-          painter.automaticPaint(p[0], p[1]);
+          painter.drawLine(p[0], p[1]);
           console.log(p);
         }*/
       } else {

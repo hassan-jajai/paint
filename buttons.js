@@ -1,22 +1,9 @@
-var Buttons = (function () {
+var Buttons = function () {
   "use strict";
 
-  var Buttons = function (
-    element,
-    buttonNames,
-    initialActiveIndex,
-    changeCallback
-  ) {
+  return function (element, buttonNames, initialActiveIndex, changeCallback) {
     var elements = [];
-    for (var i = 0; i < buttonNames.length; ++i) {
-      var button = document.createElement("div");
-      button.innerHTML = buttonNames[i];
-      element.appendChild(button);
-      elements.push(button);
-    }
-
     var activeElement = elements[initialActiveIndex];
-
     var refresh = function () {
       for (var i = 0; i < elements.length; ++i) {
         if (elements[i] === activeElement) {
@@ -26,7 +13,16 @@ var Buttons = (function () {
         }
       }
     };
-
+    this.setIndex = function (index) {
+      activeElement = elements[index];
+      refresh();
+    };
+    for (var i = 0; i < buttonNames.length; ++i) {
+      var button = document.createElement("div");
+      button.innerHTML = buttonNames[i];
+      element.appendChild(button);
+      elements.push(button);
+    }
     for (var i = 0; i < elements.length; ++i) {
       (function () {
         //create closure to store index
@@ -44,20 +40,10 @@ var Buttons = (function () {
             refresh();
           }
         };
-
         elements[i].addEventListener("click", onSelect);
         elements[i].addEventListener("touchstart", onSelect);
       })();
     }
-
-    this.setIndex = function (index) {
-      activeElement = elements[index];
-
-      refresh();
-    };
-
     refresh();
   };
-
-  return Buttons;
-})();
+};
